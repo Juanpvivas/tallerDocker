@@ -142,4 +142,28 @@ Los registros muestran que la construcción, publicación y exportación de cach
 
 El intento 1 construyó la imagen, pero GHCR rechazó su publicación con `denied: permission_denied: read_package`. Se indicó conceder al repositorio `Juanpvivas/tallerDocker` acceso `Write` en la sección `Manage Actions access` del paquete. Después de la corrección y repetición del flujo realizadas por el aprendiz, el intento 2 terminó correctamente.
 
-Pendientes: verificar la descarga de la imagen automática desde el Mac y registrar una segunda ejecución tras un nuevo cambio para observar la reutilización de caché. El flujo actual construye y publica; no incluye pruebas funcionales ni despliegue automático en un servidor.
+La descarga de la imagen automática desde el Mac y la reutilización de caché en la segunda ejecución quedaron verificadas, como se detalla a continuación. El flujo actual construye y publica; no incluye pruebas funcionales ni despliegue automático en un servidor.
+
+### Descarga de la imagen automática
+
+El aprendiz ejecutó:
+
+```bash
+docker pull ghcr.io/juanpvivas/tallerdocker:sha-62ea4a9
+```
+
+La salida indicó `Status: Downloaded newer image` y el digest `sha256:0b50b95cf2a58d8b4f9bb4a1adab09b1c22c6706c31ea807599c57bc6a4a1c9c`, coincidente con el publicado por Actions. Queda confirmada la descarga desde GHCR al Mac. Esta prueba no ejecuta la imagen ni demuestra acceso anónimo, pues el cliente había iniciado sesión en GHCR.
+
+### Segunda ejecución
+
+El commit de documentación `b548115d329cba915bc8fa70fd3a47cab3db8d97` disparó la [ejecución 37370587230](https://github.com/Juanpvivas/tallerDocker/actions/runs/37370587230). Se verificó con GitHub CLI que terminó con estado `completed` y conclusión `success`.
+
+| Medición | Primera ejecución exitosa (intento 2) | Segunda ejecución |
+|---|---|---|
+| Duración del trabajo, sin cola | 43 segundos | 36 segundos |
+| Paso Construir y publicar | 24 segundos | 8 segundos |
+| Caché de construcción | Exportada al finalizar | Importada desde `gha`; siete pasos (`#8` a `#14`) con resultado `CACHED` |
+
+La segunda ejecución tuvo lugar de 20:45:23 a 20:45:59 UTC del 5 de octubre de 2026. El paso de construcción y publicación fue 16 segundos más corto, aproximadamente un 67 %. Los registros confirman la reutilización de caché; las duraciones también dependen de la preparación del ejecutor y de las transferencias. La espera en cola no está incluida en esta comparación.
+
+Publicó `ghcr.io/juanpvivas/tallerdocker:latest` y `ghcr.io/juanpvivas/tallerdocker:sha-b548115`, ambas con digest `sha256:18eecc7e4c6fe390cb44b9a4a1538a14933c8ae5a4d27ccd4e11363e3002a703`. La descarga comprobada anteriormente sigue correspondiendo a `sha-62ea4a9`.
