@@ -109,3 +109,17 @@ docker images api-app
 ```
 
 Se conservaron las etiquetas de la imagen del proyecto. No se midió el espacio liberado ni se repitió la prueba de salud después de esta limpieza. Las imágenes pueden compartir capas, por lo que eliminar una imagen no implica recuperar todo su tamaño mostrado.
+
+## AA5: publicación manual en GHCR
+
+El **5 de octubre de 2026**, el aprendiz compartió una publicación satisfactoria de la imagen:
+
+- Imagen: `ghcr.io/juanpvivas/tallerdocker:1.0.0`.
+- Digest reportado: `sha256:36fc91f544d96a4d11007dd07a7de741d3b0fdff485a68713ddfafb9b60319b7`.
+- Salida final: `1.0.0: digest: sha256:36fc91f544d96a4d11007dd07a7de741d3b0fdff485a68713ddfafb9b60319b7 size: 2056`.
+- Las capas indicaron `Layer already exists`; el registry ya disponía de ellas y no necesitó volver a transferirlas.
+- El Dockerfile incluye `org.opencontainers.image.source=https://github.com/Juanpvivas/tallerDocker`, agregado en el commit `8f4d3da` y subido a `main`.
+
+El valor `size: 2056` corresponde al manifiesto publicado, no al tamaño total de la imagen. El digest permite identificar el contenido publicado independientemente de cambios posteriores en la etiqueta.
+
+La salida confirma el envío a GHCR. Quedan pendientes la prueba de descarga, comprobar la visibilidad y vinculación del paquete en GitHub y la primera publicación automática mediante Actions.
