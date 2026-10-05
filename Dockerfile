@@ -4,6 +4,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
 
 FROM python:3.14-slim
+LABEL org.opencontainers.image.source="https://github.com/Juanpvivas/tallerDocker"
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
 RUN useradd --create-home --uid 1001 appuser
 WORKDIR /app
