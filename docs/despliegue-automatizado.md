@@ -82,7 +82,7 @@ El volumen de PostgreSQL debe conservarse: no utilizar `down -v` en este procedi
 
 ## Pendientes
 
-- Preparar el README y el manual técnico del proyecto, enfocados en el entorno macOS acordado.
+- README y manual técnico preparados para el entorno macOS acordado; falta incorporarlos al repositorio remoto.
 - Confirmar con el instructor el alcance y acceso de la actividad de transferencia remota.
 - Si se habilita ese destino, implementar y probar su despliegue; aún no se han creado secretos ni un trabajo remoto.
 - Completar las evidencias finales, propuesta de escalamiento y video solicitados por la guía.
