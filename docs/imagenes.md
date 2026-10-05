@@ -122,4 +122,24 @@ El **5 de octubre de 2026**, el aprendiz compartió una publicación satisfactor
 
 El valor `size: 2056` corresponde al manifiesto publicado, no al tamaño total de la imagen. El digest permite identificar el contenido publicado independientemente de cambios posteriores en la etiqueta.
 
-La salida confirma el envío a GHCR. Quedan pendientes la prueba de descarga, comprobar la visibilidad y vinculación del paquete en GitHub y la primera publicación automática mediante Actions.
+La salida confirma el envío a GHCR. Quedan pendientes la prueba de descarga y comprobar la visibilidad y vinculación del paquete en GitHub. La primera publicación automática se verificó posteriormente y se registra a continuación.
+
+## AA5: primera publicación automática verificada
+
+El **5 de octubre de 2026** se consultaron directamente con GitHub CLI el estado y los registros de la [ejecución 37367685686](https://github.com/Juanpvivas/tallerDocker/actions/runs/37367685686), intento 2.
+
+| Dato | Resultado |
+|---|---|
+| Flujo | `Publicar imagen` |
+| Estado | `completed`, conclusión `success` |
+| Commit construido | `62ea4a9b4c8db6c195807d25435552533953e649` |
+| Plataforma de construcción | `linux/arm64` |
+| Etiquetas publicadas | `ghcr.io/juanpvivas/tallerdocker:latest` y `ghcr.io/juanpvivas/tallerdocker:sha-62ea4a9` |
+| Digest de ambas etiquetas en esta ejecución | `sha256:0b50b95cf2a58d8b4f9bb4a1adab09b1c22c6706c31ea807599c57bc6a4a1c9c` |
+| Duración del trabajo | Aproximadamente 43 segundos, de 20:23:21 a 20:24:04 UTC, sin contar la cola |
+
+Los registros muestran que la construcción, publicación y exportación de caché finalizaron correctamente. La etiqueta `latest` puede cambiar con futuras publicaciones; `sha-62ea4a9` identifica el commit usado para esta construcción. Para referenciar exactamente el contenido publicado se utiliza el digest.
+
+El intento 1 construyó la imagen, pero GHCR rechazó su publicación con `denied: permission_denied: read_package`. Se indicó conceder al repositorio `Juanpvivas/tallerDocker` acceso `Write` en la sección `Manage Actions access` del paquete. Después de la corrección y repetición del flujo realizadas por el aprendiz, el intento 2 terminó correctamente.
+
+Pendientes: verificar la descarga de la imagen automática desde el Mac y registrar una segunda ejecución tras un nuevo cambio para observar la reutilización de caché. El flujo actual construye y publica; no incluye pruebas funcionales ni despliegue automático en un servidor.
