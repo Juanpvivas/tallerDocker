@@ -123,4 +123,4 @@ Estos resultados confirman el recorrido cliente → Nginx → API y la consulta 
 
 Persistencia verificada según el ejercicio seguido por el aprendiz: después de recrear los contenedores, la consulta devolvió el registro de `prueba_persistencia` insertado previamente. La evidencia y los límites de la comprobación se registran en [pruebas.md](pruebas.md).
 
-También se verificaron los tres servicios activos después de recrearlos, la resolución de `db` desde la API y la ausencia de puertos publicados para PostgreSQL, con rechazo de la conexión a `127.0.0.1:5432` desde el Mac. Evidencias en [pruebas.md](pruebas.md). Queda pendiente el despliegue desde una copia limpia.
+También se verificaron los tres servicios activos después de recrearlos, la resolución de `db` desde la API y la ausencia de puertos publicados para PostgreSQL, con rechazo de la conexión a `127.0.0.1:5432` desde el Mac. Posteriormente, una copia limpia del repositorio en el mismo Mac inició los tres servicios bajo el proyecto `taller-validacion` y devolvió HTTP 200 en `/health` y `/db`. Evidencias y alcance en [pruebas.md](pruebas.md).

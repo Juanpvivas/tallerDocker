@@ -13,7 +13,7 @@ Registro de validaciones de AA4 y AA5 del taller GFPI-F-135 en macOS con Colima.
 | Resolución explícita del nombre `db` | Verificada | La consulta desde la API devolvió `172.18.0.2`. |
 | Aislamiento de PostgreSQL | Verificado para la publicación de puertos y el acceso local probado | `PortBindings` devuelve `{}` y la conexión TCP desde el Mac a `127.0.0.1:5432` fue rechazada. |
 | Estado de los tres servicios después de recrearlos | Verificado | `api` y `db` aparecen Up (healthy), y `proxy` Up con `127.0.0.1:8080->80/tcp`. |
-| Despliegue desde una copia limpia | Pendiente | Recrear contenedores en el proyecto existente no prueba este criterio. |
+| Despliegue desde una copia limpia | Verificado en el mismo Mac | Clonación de GitHub, configuración nueva y proyecto Compose `taller-validacion`; tres servicios activos y HTTP 200 en `/health` y `/db`. |
 
 ## Persistencia de datos
 
@@ -71,4 +71,32 @@ Resultado observado directamente: `{}`. Esto confirma que el contenedor no tiene
 
 La dirección `172.18.0.2` es el valor observado durante la prueba y puede cambiar al recrear la red. La API debe seguir utilizando el nombre `db`.
 
-Continúa pendiente la prueba de despliegue desde una copia limpia del repositorio.
+## Despliegue desde una copia limpia de GitHub
+
+Se siguió el ejercicio de clonar `https://github.com/Juanpvivas/tallerDocker.git` en `/Users/juan.vivas/development/tallerDocker-validacion`, preparar `.env` a partir de `.env.example` e iniciar la solución con:
+
+```bash
+docker compose -p taller-validacion config --quiet
+docker compose -p taller-validacion up -d --build
+docker compose -p taller-validacion ps
+curl -i http://localhost:8080/health
+curl -i http://localhost:8080/db
+```
+
+El commit publicado y verificado antes del ejercicio fue `49b187a6e689e823abd91457f2e46b6c3bf17dce`. Se usó un nombre de proyecto diferente para separar contenedores, red y volumen del despliegue original.
+
+Resultados compartidos por el aprendiz el **5 de octubre de 2026**:
+
+| Verificación | Resultado |
+|---|---|
+| `taller-validacion-api-1` | Imagen `api-app:1.0.0`, Up (healthy), puerto interno `8000/tcp` |
+| `taller-validacion-db-1` | Imagen `postgres:18-alpine`, Up (healthy), puerto interno `5432/tcp` |
+| `taller-validacion-proxy-1` | Imagen `nginx:1.30-alpine`, Up, publicación `127.0.0.1:8080->80/tcp` |
+| `/health` a través del proxy | HTTP 200; `{"status":"ok"}` |
+| `/db` a través del proxy | HTTP 200; `{"status":"ok","database":"appdb","server_time":"2026-10-05T19:51:59.188881+00:00"}` |
+
+**Resultado:** la copia del repositorio funciona con una configuración preparada desde el archivo de ejemplo y recursos de Compose separados. La prueba aporta evidencia de RI-12 y del criterio de despliegue desde una copia limpia.
+
+**Alcance:** se realizó en el mismo Mac y motor Docker, donde ya había imágenes y posibles capas reutilizables. No demuestra una instalación en un equipo nuevo ni una construcción sin caché. No se adjuntó el registro completo de construcción; se conservan los estados y las respuestas compartidos.
+
+El cierre del entorno `taller-validacion` y el regreso al despliegue original están pendientes de confirmación. Esta validación no completa las tareas posteriores de publicación, automatización y despliegue remoto de AA5.
